@@ -33,4 +33,3 @@ namespace NearU_Backend_Revised.Controllers
 }
 
 
-//api controllers for login and register

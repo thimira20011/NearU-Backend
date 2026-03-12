@@ -22,6 +22,8 @@ namespace NearU_Backend_Revised.Models
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
+        public string Role { get; set; } = "Student";
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? LastLoginDate { get; set; }
