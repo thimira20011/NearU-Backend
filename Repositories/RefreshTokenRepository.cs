@@ -91,6 +91,9 @@ namespace NearU_Backend_Revised.Repositories
             if (oldRefreshToken == null)
                 return null;
 
+            // Ensure the old token is still active (not revoked and not expired)
+            if (!oldRefreshToken.IsActive)
+                return null;
             // Revoke the old token
             oldRefreshToken.RevokedDate = DateTime.UtcNow;
             oldRefreshToken.ReplacedByToken = newRefreshToken.Token;
