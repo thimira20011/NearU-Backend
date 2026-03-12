@@ -4,8 +4,8 @@ namespace NearU_Backend_Revised.Models
 {
     /// <summary>
     /// User entity representing application users
-    /// </summary>
-    public class Usee
+/// </summary>
+    public class User
     {
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
