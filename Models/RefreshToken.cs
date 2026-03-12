@@ -58,7 +58,7 @@ namespace NearU_Backend_Revised.Models
         /// Navigation property to the User
         /// </summary>
         [ForeignKey(nameof(UserId))]
-        public virtual Usee? User { get; set; }
+        public virtual User? User { get; set; }
 
         // Computed properties for easy checking
 
