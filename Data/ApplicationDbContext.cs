@@ -14,8 +14,8 @@ namespace NearU_Backend_Revised.Data
         }
 
         // DbSets for entities
-        public DbSet<Usee> Users { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Usee> Users { get; set; } = null!;
+        public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,7 +54,7 @@ namespace NearU_Backend_Revised.Data
 
                 // Foreign key relationship with User
                 entity.HasOne(rt => rt.User)
-                    .WithMany()
+                    .WithMany(u => u.RefreshTokens)
                     .HasForeignKey(rt => rt.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });

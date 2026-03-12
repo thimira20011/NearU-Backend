@@ -75,7 +75,6 @@ namespace NearU_Backend_Revised.Repositories
             refreshToken.RevokedDate = DateTime.UtcNow;
             refreshToken.ReasonRevoked = reason ?? "Revoked without reason";
 
-            _context.RefreshTokens.Update(refreshToken);
             await _context.SaveChangesAsync();
 
             return true;
