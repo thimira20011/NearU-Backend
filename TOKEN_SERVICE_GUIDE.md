@@ -6,7 +6,7 @@
 
 #### `Services/ITokenService.cs`
 Interface defining token operations:
-- ✅ `GenerateAccessToken(Usee user)` - Generate JWT access tokens
+- ✅ `GenerateAccessToken(User user)` - Generate JWT access tokens
 - ✅ `GenerateRefreshToken(string userId)` - Generate secure refresh tokens
 - ✅ `ValidateAccessToken(string token)` - Validate and extract claims from JWT
 
