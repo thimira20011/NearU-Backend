@@ -22,6 +22,13 @@ namespace NearU_Backend_Revised.Models
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
 
+        /// <summary>
+        /// User role: Student, Rider, Business, or Admin
+        /// </summary>
+        [Required]
+        [MaxLength(50)]
+        public string Role { get; set; } = UserRoles.Student; // Default role
+
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? LastLoginDate { get; set; }
