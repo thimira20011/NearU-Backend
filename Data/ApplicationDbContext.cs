@@ -54,7 +54,7 @@ namespace NearU_Backend_Revised.Data
 
                 // Foreign key relationship with User
                 entity.HasOne(rt => rt.User)
-                    .WithMany()
+                    .WithMany(u => u.RefreshTokens)
                     .HasForeignKey(rt => rt.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
