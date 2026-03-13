@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NearU_Backend_Revised.Configuration;
 using NearU_Backend_Revised.Models;
+using NearU_Backend_Revised.Repositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -15,10 +16,12 @@ namespace NearU_Backend_Revised.Services
     public class TokenService : ITokenService
     {
         private readonly JwtSettings _jwtSettings;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public TokenService(IOptions<JwtSettings> jwtSettings)
+        public TokenService(IOptions<JwtSettings> jwtSettings, IRefreshTokenRepository refreshTokenRepository)
         {
             _jwtSettings = jwtSettings.Value;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         /// <summary>
@@ -154,6 +157,55 @@ namespace NearU_Backend_Revised.Services
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Validate a refresh token
+        /// Checks if token exists, is not expired, and is not revoked
+        /// </summary>
+        public async Task<RefreshToken?> ValidateRefreshToken(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return null;
+
+            // Get token from database
+            var refreshToken = await _refreshTokenRepository.GetRefreshTokenByTokenStringAsync(token);
+
+            if (refreshToken == null)
+                return null;
+
+            // Check if token is expired
+            if (refreshToken.ExpiryDate < DateTime.UtcNow)
+                return null;
+
+            // Check if token is revoked
+            if (refreshToken.IsRevoked)
+                return null;
+
+            // Token is valid
+            return refreshToken;
+        }
+
+        /// <summary>
+        /// Rotate a refresh token (revoke old token and generate new one)
+        /// </summary>
+        public async Task<RefreshToken?> RotateRefreshToken(string oldToken)
+        {
+            if (string.IsNullOrEmpty(oldToken))
+                return null;
+
+            // Validate the old token first
+            var validToken = await ValidateRefreshToken(oldToken);
+            if (validToken == null)
+                return null;
+
+            // Generate new refresh token
+            var newRefreshToken = GenerateRefreshToken(validToken.UserId);
+
+            // Replace old token with new one in database
+            var replacedToken = await _refreshTokenRepository.ReplaceRefreshTokenAsync(oldToken, newRefreshToken);
+
+            return replacedToken;
         }
     }
 }

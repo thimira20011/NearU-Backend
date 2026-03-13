@@ -14,8 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register repositories and services
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
