@@ -55,9 +55,12 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-// Register ApplicationDbContext with PostgreSQL
+// Configure Database (PostgreSQL only)
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=NearU.db"));
+{
+    options.UseNpgsql(connectionString);
+});
 
 // Register repositories and services
 builder.Services.AddScoped<UserRepository>();

@@ -1,36 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace NearU_Backend_Revised.Models
+namespace NearU_Backend_Revised.Models;
+
+public partial class User
 {
-    /// <summary>
-    /// User entity representing application users
-    /// </summary>
-    public class User
-    {
-        [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+    [Key]
+    public string Id { get; set; } = null!;
 
-        [Required]
-        [MaxLength(100)]
-        public string Username { get; set; } = string.Empty;
+    public string Username { get; set; } = null!;
 
-        [Required]
-        [EmailAddress]
-        [MaxLength(255)]
-        public string Email { get; set; } = string.Empty;
+    public string Email { get; set; } = null!;
 
-        [Required]
-        public string PasswordHash { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = null!;
 
-        public string Role { get; set; } = "Student";
+    public string Role { get; set; } = null!;
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public string CreatedDate { get; set; } = null!;
 
-        public DateTime? LastLoginDate { get; set; }
+    public string? LastLoginDate { get; set; }
 
-        public bool IsActive { get; set; } = true;
+    public int IsActive { get; set; }
 
-        // Navigation property for refresh tokens
-        public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
-    }
+    [InverseProperty("User")]
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

@@ -36,10 +36,13 @@ namespace NearU_Backend_Revised.Services
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
             var user = new User
             {
+                Id = Guid.NewGuid().ToString(),
                 Username = request.Username,
                 Email = request.Email,
                 PasswordHash = hashedPassword,
-                Role = "User"
+                Role = "User",
+                CreatedDate = DateTime.UtcNow.ToString("o"),
+                IsActive = 1
             };
 
             await _userRepo.AddUser(user);
