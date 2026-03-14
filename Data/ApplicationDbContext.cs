@@ -26,6 +26,10 @@ namespace NearU_Backend_Revised.Data
             {
                 entity.HasKey(rt => rt.Id);
 
+                // Configure Id as auto-increment (SERIAL in PostgreSQL, AUTOINCREMENT in SQLite)
+                entity.Property(rt => rt.Id)
+                    .ValueGeneratedOnAdd();
+
                 entity.Property(rt => rt.Token)
                     .IsRequired()
                     .HasMaxLength(500);

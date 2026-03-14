@@ -26,5 +26,19 @@ namespace NearU_Backend_Revised.Services
         /// <param name="token">JWT token to validate</param>
         /// <returns>User ID if valid, null otherwise</returns>
         string? ValidateAccessToken(string token);
+
+        /// <summary>
+        /// Validate a refresh token (check if exists, not expired, not revoked)
+        /// </summary>
+        /// <param name="token">Refresh token string to validate</param>
+        /// <returns>RefreshToken entity if valid, null otherwise</returns>
+        Task<RefreshToken?> ValidateRefreshToken(string token);
+
+        /// <summary>
+        /// Rotate a refresh token (revoke old token and generate new one)
+        /// </summary>
+        /// <param name="oldToken">Old refresh token string to rotate</param>
+        /// <returns>New RefreshToken entity if successful, null otherwise</returns>
+        Task<RefreshToken?> RotateRefreshToken(string oldToken);
     }
 }

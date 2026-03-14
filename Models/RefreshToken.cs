@@ -1,83 +1,42 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
-namespace NearU_Backend_Revised.Models
+namespace NearU_Backend_Revised.Models;
+
+[Index("Token", Name = "IX_RefreshTokens_Token", IsUnique = true)]
+[Index("UserId", Name = "IX_RefreshTokens_UserId")]
+public partial class RefreshToken
 {
-    /// <summary>
-    /// Represents a refresh token for long-lived authentication sessions.
-    /// This is the record of every refresh token issued to users.
-    /// </summary>
-    public class RefreshToken
-    {
-        [Key]
-        public int Id { get; set; }
+    [Key]
+    public int Id { get; set; }
 
-        /// <summary>
-        /// The actual refresh token string (should be unique and cryptographically secure)
-        /// </summary>
-        [Required]
-        [MaxLength(500)]
-        public string Token { get; set; } = string.Empty;
+    public string Token { get; set; } = null!;
 
-        /// <summary>
-        /// When the refresh token expires
-        /// </summary>
-        [Required]
-        public DateTime ExpiryDate { get; set; }
+    public DateTime ExpiryDate { get; set; }
 
-        /// <summary>
-        /// When the refresh token was created
-        /// </summary>
-        [Required]
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        /// <summary>
-        /// When the refresh token was revoked (null if still active)
-        /// </summary>
-        public DateTime? RevokedDate { get; set; }
+    public DateTime? RevokedDate { get; set; }
 
-        /// <summary>
-        /// Token that replaced this token when it was refreshed
-        /// </summary>
-        [MaxLength(500)]
-        public string? ReplacedByToken { get; set; }
+    public string? ReplacedByToken { get; set; }
 
-        /// <summary>
-        /// Reason why the token was revoked (optional)
-        /// </summary>
-        [MaxLength(200)]
-        public string? ReasonRevoked { get; set; }
+    public string? ReasonRevoked { get; set; }
 
-        /// <summary>
-        /// Foreign key to the User who owns this refresh token
-        /// </summary>
-        [Required]
-        public string UserId { get; set; } = string.Empty;
+    public string UserId { get; set; } = null!;
 
-        /// <summary>
-        /// Navigation property to the User
-        /// </summary>
-        [ForeignKey(nameof(UserId))]
-        public virtual User? User { get; set; }
+    [ForeignKey("UserId")]
+    [InverseProperty("RefreshTokens")]
+    public virtual User User { get; set; } = null!;
 
-        // Computed properties for easy checking
+    [NotMapped]
+    public bool IsExpired => DateTime.UtcNow >= ExpiryDate;
 
-        /// <summary>
-        /// Check if the token is expired
-        /// </summary>
-        [NotMapped]
-        public bool IsExpired => DateTime.UtcNow >= ExpiryDate;
+    [NotMapped]
+    public bool IsRevoked => RevokedDate != null;
 
-        /// <summary>
-        /// Check if the token has been revoked
-        /// </summary>
-        [NotMapped]
-        public bool IsRevoked => RevokedDate != null;
-
-        /// <summary>
-        /// Check if the token is currently active (not expired and not revoked)
-        /// </summary>
-        [NotMapped]
-        public bool IsActive => !IsRevoked && !IsExpired;
-    }
+    [NotMapped]
+    public bool IsActive => !IsRevoked && !IsExpired;
 }
