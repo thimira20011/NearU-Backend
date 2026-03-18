@@ -22,7 +22,7 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var user = await _userService.Register(request);
-                return Ok(new { message = "User registered successfully", userId = user.Id, username = user.Username });
+                return Created("", new { message = "User registered successfully", userId = user.Id, username = user.Username });
             }
             catch (Exception ex)
             {
