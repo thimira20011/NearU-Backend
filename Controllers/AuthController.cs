@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NearU_Backend_Revised.Services;
 using NearU_Backend_Revised.DTOs.Auth;
+using NearU_Backend_Revised.Models;
 
 
 namespace NearU_Backend_Revised.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController :ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserService _userService;
 
@@ -22,11 +23,13 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var user = await _userService.Register(request);
-                return Ok(new { message = "User registered successfully", userId = user.Id, username = user.Username });
+                var data = new { userId = user.Id, username = user.Username }; 
+
+                return Created(string.Empty, ApiResponse<object>.SuccessResponse("User registered successfully", data));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.FailResponse(ex.Message)); 
             }
         }
 
@@ -36,11 +39,11 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var authResponse = await _userService.Login(request);
-                return Ok(authResponse);
+                return Ok(ApiResponse<object>.SuccessResponse("Login successful", authResponse)); 
             }
             catch (Exception ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
 
@@ -50,11 +53,11 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var authResponse = await _userService.RefreshToken(request);
-                return Ok(authResponse);
+                return Ok(ApiResponse<object>.SuccessResponse("Token refreshed successfully", authResponse));
             }
             catch (Exception ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
 
@@ -65,17 +68,14 @@ namespace NearU_Backend_Revised.Controllers
             {
                 var success = await _userService.Logout(request.RefreshToken);
                 if (success)
-                    return Ok(new { message = "Logged out successfully" });
+                    return Ok(ApiResponse<object>.SuccessResponse("Logged out successfully", default!));
                 else
-                    return BadRequest(new { message = "Logout failed" });
+                    return BadRequest(ApiResponse<object>.FailResponse("Logout failed"));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
     }
 }
-
-
-
