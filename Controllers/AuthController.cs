@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NearU_Backend_Revised.Services;
 using NearU_Backend_Revised.DTOs.Auth;
+using NearU_Backend_Revised.Models;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.OpenApi;
 
 
 namespace NearU_Backend_Revised.Controllers
@@ -22,11 +25,13 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var user = await _userService.Register(request);
-                return Ok(new { message = "User registered successfully", userId = user.Id, username = user.Username });
+                var data = new { userId = user.Id, username = user.UserName };
+
+                return ok(ApiResponse<object>.SuccessResponse("User registered successfully", data));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(IOpenApiResponse<object>.FailResponse(ex.Message));
             }
         }
 
@@ -36,11 +41,11 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var authResponse = await _userService.Login(request);
-                return Ok(authResponse);
+                return Ok(ApiResponse<object>.SuccessResponse("Login successful", authResponse));
             }
             catch (Exception ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
 
