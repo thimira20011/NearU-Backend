@@ -111,6 +111,11 @@ namespace NearU_Backend_Revised.Services
             };
         }
 
+        public async Task<User?> GetUserById(string id)
+        {
+            return await _userRepo.GetUserById(id);
+        }
+
         /// <summary>
         /// Logout user by revoking their refresh token
         /// </summary>
