@@ -405,3 +405,12 @@ FodyWeavers.xsd
 appsettings.*.json
 !appsettings.json
 !appsettings.Development.json
+
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Untracked unwanted directories
+Migrations/code/
