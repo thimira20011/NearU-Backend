@@ -2,6 +2,10 @@
 using NearU_Backend_Revised.Services;
 using NearU_Backend_Revised.DTOs.Auth;
 using NearU_Backend_Revised.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 
 namespace NearU_Backend_Revised.Controllers
@@ -58,6 +62,35 @@ namespace NearU_Backend_Revised.Controllers
             catch (Exception ex)
             {
                 return Unauthorized(ApiResponse<object>.FailResponse(ex.Message));
+            }
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetUser(string id)
+        {
+            try
+            {
+                var user = await _userService.GetUserById(id);
+                if (user == null)
+                    return NotFound(ApiResponse<object>.FailResponse("User not found"));
+
+                var data = new
+                {
+                    userId = user.Id,
+                    username = user.Username,
+                    email = user.Email,
+                    role = user.Role,
+                    createdDate = user.CreatedDate,
+                    lastLoginDate = user.LastLoginDate,
+                    isActive = user.IsActive
+                };
+
+                return Ok(ApiResponse<object>.SuccessResponse("User retrieved successfully", data));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
 
