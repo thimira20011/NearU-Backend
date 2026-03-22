@@ -414,3 +414,4 @@ appsettings.*.json
 
 # Untracked unwanted directories
 Migrations/code/
+out/
