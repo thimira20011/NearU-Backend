@@ -14,9 +14,9 @@ namespace NearU_Backend_Revised.Models
 
         public string? Description { get; set; }
 
-        public decimal Price { get; set; }
+        public string Address { get; set; } = string.Empty;
 
-        public bool IsOpen { get; set; } = true;
+        public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

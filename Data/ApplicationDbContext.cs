@@ -90,15 +90,6 @@ namespace NearU_Backend_Revised.Data
                 entity.Property(fs => fs.PhoneNumber)
                    .HasMaxLength(20);
 
-                entity.Property(fs => fs.OpeningHours)
-                    .HasMaxLength(100);
-
-                entity.Property(fs => fs.PhotoUrl)
-                    .HasMaxLength(500);
-
-                entity.Property(fs => fs.IsOpen)
-                    .HasDefaultValue(true);
-
                 entity.Property(fs => fs.CreatedAt)
                     .HasDefaultValueSql("NOW()");
 
