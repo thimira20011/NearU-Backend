@@ -17,7 +17,7 @@ namespace NearU_Backend_Revised.Data
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
         public DbSet<FoodShop> FoodShop { get; set; } = null!;
-        public DbSet<FoodShop> FoodShops { get; set; } = null!;
+        public DbSet<MenuItem> MenuItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

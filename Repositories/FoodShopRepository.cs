@@ -17,14 +17,14 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<IEnumerable<FoodShop>> GetAllAsync()
         {
             return await _context.FoodShops
-                .OrderByDescending(fs => fs.CreatedAt)
-                .ToListAsync();
+                .OrderByDescending(fs => fs.CreatedAt) //sort result newest first
+                .ToListAsync(); //get result as a list
         }
 
         public async Task<FoodShop?> GetByIdAsync(string id)
         {
             return await _context.FoodShops
-                .include(fs => fs.MenuItems)
+                .include(fs => fs.MenuItems)  //also fetch menuitems when fetching shops
                 .FirstOrDefaultAsync(fs => fs.Id == id);
         }
 
@@ -44,7 +44,7 @@ namespace NearU_Backend_Revised.Repositories
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var shop = await _context.FoodShops.FindAsync(id);
+            var shop = await _context.FoodShops.FindAsync(id); //faster than firstordefault for primary key
             if (shop == null) return false;
 
             _context.Remove(shop);
@@ -55,7 +55,7 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<bool> ExistsAsync(string id)
         {
             return await _context.FoodShops
-                .AnyAsync(fs => fs.Id == id);
+                .AnyAsync(fs => fs.Id == id); //return true if any shop exists with the given id
         }
     }
 }
