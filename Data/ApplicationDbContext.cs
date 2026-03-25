@@ -16,6 +16,8 @@ namespace NearU_Backend_Revised.Data
         // DbSets for entities
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
+        public DbSet<FoodShop> FoodShop { get; set; } = null!;
+        public DbSet<MenuItem> MenuItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -68,6 +70,54 @@ namespace NearU_Backend_Revised.Data
             {
                 entity.HasKey(u => u.Id);
                 // Add other User configurations here as needed
+            });
+
+
+            modelBuilder.Entity<FoodShop>(entity =>
+            {
+                entity.HasKey(fs => fs.Id);
+
+                entity.Property(fs => fs.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(fs => fs.Description)
+                    .HasMaxLength(500);
+
+                entity.Property(fs => fs.Address)
+                    .HasMaxLength(200);
+
+                entity.Property(fs => fs.PhoneNumber)
+                   .HasMaxLength(20);
+
+                entity.Property(fs => fs.CreatedAt)
+                    .HasDefaultValueSql("NOW()");
+
+                entity.HasMany(fs => fs.MenuItems)
+                    .WithOne(mi => mi.FoodShop)
+                    .HasForeignKey(mi => mi.FoodShopId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<MenuItem>(entity =>
+            {
+                entity.HasKey(mi => mi.Id);
+
+                entity.Property(mi => mi.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(mi => mi.Description)
+                    .HasMaxLength(300);
+
+                entity.Property(mi => mi.Price)
+                    .IsRequired()
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(mi => mi.PhotoUrl)
+                    .HasMaxLength(500);
+
+                entity.HasIndex(mi => mi.FoodShopId);
             });
         }
     }
