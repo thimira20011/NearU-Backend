@@ -17,13 +17,13 @@ namespace NearU_Backend_Revised.Services
         public async Task<IEnumerable<FoodShopResponse>> GetAllShopAsync()
         {
             var shops = await _repository.GetAllAsync();
-            return shops.Select(s => MapToResponse(shop));
+            return shops.Select(s => MapToResponse(shop)); //transform each shop into dto
         }
 
         public async Task<FoodShopResponse?> GetShopByIdAsync(string id)
         {
             var shop = await _repository.GetByIdAsync(id);
-            if shop(shop == null) return null;
+            if shop(shop == null) return null; 
             return MapToResponse(shop);
         }
 
@@ -31,7 +31,7 @@ namespace NearU_Backend_Revised.Services
         {
             var shop = new FoodShop
             {
-                Id = Guild.NewGuild().ToString(),
+                Id = Guid.NewGuild().ToString(), //generate a unique id
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = dto.Address,
@@ -48,8 +48,8 @@ namespace NearU_Backend_Revised.Services
         {
             var shop = await _repository.GetByIdAsync(id);
             if (shop == null) return null;
-
-            shop.Name = dto.Name;
+             
+            shop.Name = dto.Name ?? shop.name; //use left if not null otherwise use right
             shop.Description = dto.Description;
             shop.Address = dto.Address;
             shop.PhoneNumber = dto.PhoneNumber;
@@ -65,7 +65,7 @@ namespace NearU_Backend_Revised.Services
             return await _repository.DeleteAsync(id);
         }
 
-        public static FoodShopResponse MapToResponse(FoodShop shop) //taks a model and return a DTO
+        private static FoodShopResponse MapToResponse(FoodShop shop) //taks a model and return a DTO
         {
             return new FoodShopResponse
             {
