@@ -14,33 +14,33 @@ namespace NearU_Backend_Revised.Services
             _repository = repository;
         }
 
-        public async Task<IEnumerable<FoodShopResponse>> GetAllShopAsync()
+        public async Task<IEnumerable<FoodShopResponse>> GetAllShopsAsync()
         {
             var shops = await _repository.GetAllAsync();
-            return shops.Select(s => MapToResponse(shop)); //transform each shop into dto
+            return shops.Select(s => MapToResponse(s)); // Corrected: use the parameter 's'
         }
 
         public async Task<FoodShopResponse?> GetShopByIdAsync(string id)
         {
             var shop = await _repository.GetByIdAsync(id);
-            if shop(shop == null) return null; 
+            if (shop == null) return null; // Corrected: removed 'shop' outside the parentheses
             return MapToResponse(shop);
         }
 
-        public async Task<FoodShopResponse?> CreateShopAsync(CreateFoodShop dto)
+        public async Task<FoodShopResponse> CreateShopAsync(CreateFoodShop dto)
         {
             var shop = new FoodShop
             {
-                Id = Guid.NewGuild().ToString(), //generate a unique id
+                Id = Guid.NewGuid().ToString(), // Corrected: NewGuid instead of NewGuild
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = dto.Address,
                 PhoneNumber = dto.PhoneNumber,
-                PhotoUrl = dto.PhotoUrl,
+                // PhotoUrl = dto.PhotoUrl, // Removed: Not in current model
                 CreatedAt = DateTime.UtcNow,
             };
 
-            var created = await._repostory.CreateAsync(shop);
+            var created = await _repository.CreateAsync(shop); // Corrected: removed dot after await
             return MapToResponse(created);
         }
 
@@ -49,11 +49,11 @@ namespace NearU_Backend_Revised.Services
             var shop = await _repository.GetByIdAsync(id);
             if (shop == null) return null;
              
-            shop.Name = dto.Name ?? shop.name; //use left if not null otherwise use right
+            shop.Name = dto.Name ?? shop.Name; // Corrected: name to Name
             shop.Description = dto.Description;
             shop.Address = dto.Address;
             shop.PhoneNumber = dto.PhoneNumber;
-            shop.PhotoUrl = dto.PhotoUrl;
+            // shop.PhotoUrl = dto.PhotoUrl; // Removed: Not in current model
 
             var updated = await _repository.UpdateAsync(shop);
             if (updated == null) return null;
@@ -65,19 +65,18 @@ namespace NearU_Backend_Revised.Services
             return await _repository.DeleteAsync(id);
         }
 
-        private static FoodShopResponse MapToResponse(FoodShop shop) //taks a model and return a DTO
+        private static FoodShopResponse MapToResponse(FoodShop shop) // Corrected method syntax
         {
             return new FoodShopResponse
             {
                 Id = shop.Id,
-                Name = shop.Id,
+                Name = shop.Name, // Corrected: Name instead of Id
                 Description = shop.Description,
                 Address = shop.Address,
                 PhoneNumber = shop.PhoneNumber,
-                PhotoUrl = shop.PhotoUrl,
-                CreateAt = shop.CreateAt,
-            }
+                // PhotoUrl = shop.PhotoUrl, // Removed: Not in current model
+                CreatedAt = shop.CreatedAt, // Corrected: CreatedAt
+            };
         }
-        
     }
 }
