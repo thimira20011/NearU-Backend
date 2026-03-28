@@ -26,13 +26,13 @@ namespace NearU_Backend_Revised.Services
         {
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
-            retutn MaptoResponse(item);
+            return MapToResponse(item); // Corrected typo
         }
 
-        public async Task<MenuItemResponse?> CreateItemAsync(stirng shopId, CreateMenuItem dto)
+        public async Task<MenuItemResponse?> CreateItemAsync(string shopId, CreateMenuItem dto) // Corrected 'stirng'
         {
             var shopExists = await _shoprepository.GetByIdAsync(shopId);
-            if(!shopExists) return null;
+            if (shopExists == null) return null; // Corrected check
 
             var item = new MenuItem
             {
@@ -41,8 +41,7 @@ namespace NearU_Backend_Revised.Services
                 Name = dto.Name,
                 Description = dto.Description,
                 Price = dto.Price,
-                Photo = dto.Photo,
-                CreatedAt = DateTime.UtcNow,
+                PhotoUrl = dto.PhotoUrl, // Corrected property
             };
 
             var created = await _itemrepository.CreateAsync(item);
@@ -57,19 +56,22 @@ namespace NearU_Backend_Revised.Services
             item.Name = dto.Name ?? item.Name;
             item.Description = dto.Description ?? item.Description;
             item.PhotoUrl = dto.PhotoUrl ?? item.PhotoUrl;
-            item.Price = dto.Price ?? item.Price;
+            if (dto.Price.HasValue)
+            {
+                item.Price = dto.Price.Value;
+            }
 
             var updated = await _itemrepository.UpdateAsync(item);
-            if (updated == null) retun null;
+            if (updated == null) return null; // Corrected typo
             return MapToResponse(updated);
         }
 
-        public async void DeleteItemAsync(string id) 
+        public async Task<bool> DeleteItemAsync(string id) // Corrected signature
         {
             return await _itemrepository.DeleteAsync(id);
         }
 
-        private MenuItemResponse MapToResponse(MenuItem item)
+        private static MenuItemResponse MapToResponse(MenuItem item) // Made static for better performance
         {
             return new MenuItemResponse
             {
@@ -79,7 +81,7 @@ namespace NearU_Backend_Revised.Services
                 Description = item.Description,
                 Price = item.Price,
                 PhotoUrl = item.PhotoUrl,
-                CreatedAt = item.CreatedAt,
             };
         }
+    }
 }
