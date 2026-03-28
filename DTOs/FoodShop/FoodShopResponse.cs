@@ -2,7 +2,7 @@ namespace NearU_Backend_Revised.DTOs.FoodShop
 {
     public class FoodShopResponse
     {
-        public int Id { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
         public string Name { get; set; } = null!;
 
@@ -13,5 +13,7 @@ namespace NearU_Backend_Revised.DTOs.FoodShop
         public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public string? PhotoUrl { get; set; }
     }
 }

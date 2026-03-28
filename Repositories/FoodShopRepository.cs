@@ -11,7 +11,7 @@ namespace NearU_Backend_Revised.Repositories
 
         public FoodShopRepository(ApplicationDbContext context)
         {
-            _contexto = context;
+            _context = context;
         }
 
         public async Task<IEnumerable<FoodShop>> GetAllAsync()
@@ -24,7 +24,7 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<FoodShop?> GetByIdAsync(string id)
         {
             return await _context.FoodShops
-                .include(fs => fs.MenuItems)  //also fetch menuitems when fetching shops
+                .Include(fs => fs.MenuItems)  //also fetch menuitems when fetching shops
                 .FirstOrDefaultAsync(fs => fs.Id == id);
         }
 

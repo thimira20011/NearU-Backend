@@ -6,7 +6,7 @@ namespace NearU_Backend_Revised.Services.Interfaces
     {
         Task<IEnumerable<FoodShopResponse>> GetAllShopsAsync();
         Task<FoodShopResponse?> GetShopByIdAsync(string id);
-        Task<FoodShopResponse> CreateShopAsync(CreateFoodShop dto);
+        Task<FoodShopResponse?> CreateShopAsync(CreateFoodShop dto);
         Task<FoodShopResponse?> UpdateShopAsync(string id, UpdateFoodShop dto);
         Task<bool> DeleteShopAsync(string id);
     }

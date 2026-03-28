@@ -6,7 +6,7 @@ namespace NearU_Backend_Revised.Models
     public class FoodShop
     {
         [Key]
-        public string Id { get; set; } null!;
+        public string Id { get; set; } = null!;
 
         [Required]
         [MaxLength(100)]
@@ -18,6 +18,11 @@ namespace NearU_Backend_Revised.Models
 
         public string? PhoneNumber { get; set; }
 
+        public string? PhotoUrl { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public List<MenuItem> MenuItems { get; set; } = new();
+
     }
 }

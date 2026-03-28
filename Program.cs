@@ -6,6 +6,7 @@ using NearU_Backend_Revised.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using NearU_Backend_Revised.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,7 +69,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 //register imagekit settings
-builder.Services.Configure<ImagekitSettings>(
+builder.Services.Configure<ImageKitSetting>(
     builder.Configuration.GetSection("Imagekit")
 );
 

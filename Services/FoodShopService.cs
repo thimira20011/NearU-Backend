@@ -1,4 +1,4 @@
-using NearU_Backend_Revised.foodShopDatas.FoodShop;
+using NearU_Backend_Revised.DTOs.FoodShop;
 using NearU_Backend_Revised.Models;
 using NearU_Backend_Revised.Repositories.Interfaces;
 using NearU_Backend_Revised.Services.Interfaces;
@@ -16,16 +16,16 @@ namespace NearU_Backend_Revised.Services
             _imageService = imageService;
         }
 
-        public async Task<IEnumerable<FoodShopResponse>> GetAllShopAsync()
+        public async Task<IEnumerable<FoodShopResponse>> GetAllShopsAsync()
         {
             var shops = await _repository.GetAllAsync();
-            return shops.Select(s => MapToResponse(shop)); //transform each shop into foodShopData
+            return shops.Select(shop => MapToResponse(shop)); //transform each shop into foodShopData
         }
 
         public async Task<FoodShopResponse?> GetShopByIdAsync(string id)
         {
             var shop = await _repository.GetByIdAsync(id);
-            if shop(shop == null) return null; 
+            if (shop == null) return null; 
             return MapToResponse(shop);
         }
 
@@ -41,7 +41,7 @@ namespace NearU_Backend_Revised.Services
 
             var shop = new FoodShop
             {
-                Id = Guid.NewGuild().ToString(), //generate a unique id
+                Id = Guid.NewGuid().ToString(), //generate a unique id
                 Name = foodShopData.Name,
                 Description = foodShopData.Description,
                 Address = foodShopData.Address,
@@ -50,7 +50,7 @@ namespace NearU_Backend_Revised.Services
                 CreatedAt = DateTime.UtcNow,
             };
 
-            var created = await._repostory.CreateAsync(shop);
+            var created = await _repository.CreateAsync(shop);
             return MapToResponse(created);
         }
 
@@ -59,7 +59,7 @@ namespace NearU_Backend_Revised.Services
             var shop = await _repository.GetByIdAsync(id);
             if (shop == null) return null;
              
-            shop.Name = foodShopData.Name ?? shop.name; //use left if not null otherwise use right
+            shop.Name = foodShopData.Name ?? shop.Name!; //use left if not null otherwise use right
             shop.Description = foodShopData.Description;
             shop.Address = foodShopData.Address;
             shop.PhoneNumber = foodShopData.PhoneNumber;
@@ -67,7 +67,7 @@ namespace NearU_Backend_Revised.Services
 
             if (foodShopData.Photo != null)
             {
-                shop.PhotoUrl = await _imageService.UploadImageAsync(foodShopData.Photo);
+                shop.PhotoUrl = await _imageService.UploadImageAsync(foodShopData.Photo , "foodshops");
             }
 
             var updated = await _repository.UpdateAsync(shop);
@@ -90,8 +90,8 @@ namespace NearU_Backend_Revised.Services
                 Address = shop.Address,
                 PhoneNumber = shop.PhoneNumber,
                 PhotoUrl = shop.PhotoUrl,
-                CreateAt = shop.CreateAt,
-            }
+                CreatedAt = shop.CreatedAt,
+            };
         }
         
     }

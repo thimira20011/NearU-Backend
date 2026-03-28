@@ -3,6 +3,7 @@ using Imagekit.Sdk;
 using Microsoft.Extensions.Options;
 using NearU_Backend_Revised.Configuration;
 using NearU_Backend_Revised.Services.Interfaces;
+using NearU_Backend_Revised.Models;
 
 namespace NearU_Backend_Revised.Services
 {
@@ -24,7 +25,7 @@ namespace NearU_Backend_Revised.Services
             var fileBytes = memoryStream.ToArray(); //convert memory stream to byte array
 
             //create imagekit client
-            var imageKit = new ImageKitClient(
+            var imageKit = new ImagekitClient(
                 _settings.PublicKey,
                 _settings.PrivateKey,
                 _settings.UrlEndpoint
@@ -41,7 +42,7 @@ namespace NearU_Backend_Revised.Services
 
             var result = await imageKit.UploadAsync(uploadRequest); //upload file to imagekit
 
-            return result.Url; //return the URL of the uploaded image
+            return result.url; //return the URL of the uploaded image
         }
     }
 }

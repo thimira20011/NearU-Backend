@@ -5,7 +5,7 @@ using NearU_Backend_Revised.Repositories.Interfaces;
 
 namespace NearU_Backend_Revised.Repositories
 {
-    pubilc class MenuItemRepository : IMenuItemRepository
+    public class MenuItemRepository : IMenuItemRepository
     {
         public readonly ApplicationDbContext _context;
         
@@ -14,9 +14,9 @@ namespace NearU_Backend_Revised.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<MenuItem>> GetShopById(string shopId)
+        public async Task<IEnumerable<MenuItem>> GetByShopIdAsync(string shopId)
         {
-            return await _context.Menuitems
+            return await _context.MenuItems
                 .Where(mi => mi.FoodShop.Id == shopId)
                 .OrderBy(mi => mi.Name)
                 .ToListAsync();
@@ -25,7 +25,7 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<MenuItem?> GetByIdAsync(string id)
         {
             return await _context.MenuItems
-                .FindAsync(id);
+                .FirstOrDefaultAsync(mi => mi.Id == id);
         }
 
         public async Task<MenuItem> CreateAsync(MenuItem item)

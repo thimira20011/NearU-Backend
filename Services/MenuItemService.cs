@@ -1,5 +1,5 @@
 using Imagekit.Sdk;
-using NearU_Backend_Revised.menuItemDatas.MenuItem;
+using NearU_Backend_Revised.DTOs.MenuItem;
 using NearU_Backend_Revised.Models;
 using NearU_Backend_Revised.Repositories.Interfaces;
 using NearU_Backend_Revised.Services.Interfaces;
@@ -29,18 +29,18 @@ namespace NearU_Backend_Revised.Services
         {
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
-            retutn MaptoResponse(item);
+            return MapToResponse(item);
         }
 
-        public async Task<MenuItemResponse?> CreateItemAsync(stirng shopId, CreateMenuItem menuItemData)
+        public async Task<MenuItemResponse?> CreateItemAsync(string shopId, CreateMenuItem menuItemData)
         {
             var shopExists = await _shoprepository.GetByIdAsync(shopId);
-            if(!shopExists) return null;
+            if (shopExists == null) return null;
 
             string? photoUrl = null;
             if (menuItemData.Photo != null)
             {
-                photoUrl await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
+                photoUrl = await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
             }
 
             var item = new MenuItem
@@ -73,11 +73,11 @@ namespace NearU_Backend_Revised.Services
             }
 
             var updated = await _itemrepository.UpdateAsync(item);
-            if (updated == null) retun null;
+            if (updated == null) return null;
             return MapToResponse(updated);
         }
 
-        public async void DeleteItemAsync(string id) 
+        public async Task<bool> DeleteItemAsync(string id)
         {
             return await _itemrepository.DeleteAsync(id);
         }
@@ -95,4 +95,5 @@ namespace NearU_Backend_Revised.Services
                 CreatedAt = item.CreatedAt,
             };
         }
+    }
 }

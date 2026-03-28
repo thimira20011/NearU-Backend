@@ -4,7 +4,7 @@ namespace NearU_Backend_Revised.Repositories.Interfaces
 {
     public interface IFoodShopRepository
     {
-        Task<IEnumable<FoodShop>> GetAllAsync(); //IEnumerable is a basic collection type , can loop but no add/remove
+        Task<IEnumerable<FoodShop>> GetAllAsync(); //IEnumerable is a basic collection type , can loop but no add/remove
         Task<FoodShop?> GetByIdAsync(string id);
         Task<FoodShop> CreateAsync(FoodShop shop);
         Task<FoodShop?> UpdateAsync(FoodShop shop);

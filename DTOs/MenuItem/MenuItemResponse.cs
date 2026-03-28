@@ -1,19 +1,20 @@
-namespace NearU_Backend_Revised.DTOs.FoodShop
+namespace NearU_Backend_Revised.DTOs.MenuItem
 {
-    public class FoodShopResponse
+    public class MenuItemResponse
     {
-        public int Id { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
-        public int FoodShopId { get; set; } = null!;
+        public string FoodShopId { get; set; } = null!;
 
         public string Name { get; set; } = null!;
 
         public string? Description { get; set; }
 
-        public string? Address { get; set; }
+        public decimal Price { get; set; }
 
-        public string? PhoneNumber { get; set; }
+        public string? PhotoUrl { get; set; }
 
-        public DateTime CreateAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
+
 }
