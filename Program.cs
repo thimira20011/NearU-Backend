@@ -67,6 +67,15 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+//register imagekit settings
+builder.Services.Configure<ImagekitSettings>(
+    builder.Configuration.GetSection("Imagekit")
+);
+
+//register image service
+builder.Services.AddScoped<IImageService, ImageService>();
+
+
 // Configure Database (PostgreSQL only)
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

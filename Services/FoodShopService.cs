@@ -1,4 +1,4 @@
-using NearU_Backend_Revised.DTOs.FoodShop;
+using NearU_Backend_Revised.foodShopDatas.FoodShop;
 using NearU_Backend_Revised.Models;
 using NearU_Backend_Revised.Repositories.Interfaces;
 using NearU_Backend_Revised.Services.Interfaces;
@@ -8,16 +8,18 @@ namespace NearU_Backend_Revised.Services
     public class FoodShopService : IFoodShopService
     {
         private readonly IFoodShopRepository _repository;
+        private readonly IImageService _imageService;
 
-        public FoodShopService(IFoodShopRepository repository)
+        public FoodShopService(IFoodShopRepository repository, IImageService imageService)
         {
             _repository = repository;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<FoodShopResponse>> GetAllShopAsync()
         {
             var shops = await _repository.GetAllAsync();
-            return shops.Select(s => MapToResponse(shop)); //transform each shop into dto
+            return shops.Select(s => MapToResponse(shop)); //transform each shop into foodShopData
         }
 
         public async Task<FoodShopResponse?> GetShopByIdAsync(string id)
@@ -27,16 +29,24 @@ namespace NearU_Backend_Revised.Services
             return MapToResponse(shop);
         }
 
-        public async Task<FoodShopResponse?> CreateShopAsync(CreateFoodShop dto)
+        public async Task<FoodShopResponse?> CreateShopAsync(CreateFoodShop foodShopData)
         {
+            string? photoUrl = null;
+
+            if (foodShopData.Photo != null)
+            {
+                photoUrl = await _imageService.UploadImageAsync(foodShopData.Photo, "foodshops");
+            }
+
+
             var shop = new FoodShop
             {
                 Id = Guid.NewGuild().ToString(), //generate a unique id
-                Name = dto.Name,
-                Description = dto.Description,
-                Address = dto.Address,
-                PhoneNumber = dto.PhoneNumber,
-                PhotoUrl = dto.PhotoUrl,
+                Name = foodShopData.Name,
+                Description = foodShopData.Description,
+                Address = foodShopData.Address,
+                PhoneNumber = foodShopData.PhoneNumber,
+                PhotoUrl = photoUrl,
                 CreatedAt = DateTime.UtcNow,
             };
 
@@ -44,16 +54,21 @@ namespace NearU_Backend_Revised.Services
             return MapToResponse(created);
         }
 
-        public async Task<FoodShopResponse?> UpdateShopAsync(string id, UpdateFoodShop dto)
+        public async Task<FoodShopResponse?> UpdateShopAsync(string id, UpdateFoodShop foodShopData)
         {
             var shop = await _repository.GetByIdAsync(id);
             if (shop == null) return null;
              
-            shop.Name = dto.Name ?? shop.name; //use left if not null otherwise use right
-            shop.Description = dto.Description;
-            shop.Address = dto.Address;
-            shop.PhoneNumber = dto.PhoneNumber;
-            shop.PhotoUrl = dto.PhotoUrl;
+            shop.Name = foodShopData.Name ?? shop.name; //use left if not null otherwise use right
+            shop.Description = foodShopData.Description;
+            shop.Address = foodShopData.Address;
+            shop.PhoneNumber = foodShopData.PhoneNumber;
+            shop.PhotoUrl = foodShopData.PhotoUrl;
+
+            if (foodShopData.Photo != null)
+            {
+                shop.PhotoUrl = await _imageService.UploadImageAsync(foodShopData.Photo);
+            }
 
             var updated = await _repository.UpdateAsync(shop);
             if (updated == null) return null;
@@ -65,7 +80,7 @@ namespace NearU_Backend_Revised.Services
             return await _repository.DeleteAsync(id);
         }
 
-        private static FoodShopResponse MapToResponse(FoodShop shop) //taks a model and return a DTO
+        private static FoodShopResponse MapToResponse(FoodShop shop) //taks a model and return a foodShopData
         {
             return new FoodShopResponse
             {

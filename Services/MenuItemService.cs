@@ -1,4 +1,5 @@
-using NearU_Backend_Revised.DTOs.MenuItem;
+using Imagekit.Sdk;
+using NearU_Backend_Revised.menuItemDatas.MenuItem;
 using NearU_Backend_Revised.Models;
 using NearU_Backend_Revised.Repositories.Interfaces;
 using NearU_Backend_Revised.Services.Interfaces;
@@ -9,11 +10,13 @@ namespace NearU_Backend_Revised.Services
     {
         private readonly IMenuItemRepository _itemrepository;
         private readonly IFoodShopRepository _shoprepository;
+        private readonly IImageService _imageService;
 
-        public MenuItemService(IMenuItemRepository itemrepository, IFoodShopRepository shoprepository)
+        public MenuItemService(IMenuItemRepository itemrepository, IFoodShopRepository shoprepository, IImageService imageService)
         {
             _itemrepository = itemrepository;
             _shoprepository = shoprepository;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<MenuItemResponse>> GetItemsByShopAsync(string shopId)
@@ -29,19 +32,25 @@ namespace NearU_Backend_Revised.Services
             retutn MaptoResponse(item);
         }
 
-        public async Task<MenuItemResponse?> CreateItemAsync(stirng shopId, CreateMenuItem dto)
+        public async Task<MenuItemResponse?> CreateItemAsync(stirng shopId, CreateMenuItem menuItemData)
         {
             var shopExists = await _shoprepository.GetByIdAsync(shopId);
             if(!shopExists) return null;
+
+            string? photoUrl = null;
+            if (menuItemData.Photo != null)
+            {
+                photoUrl await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
+            }
 
             var item = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
                 FoodShopId = shopId,
-                Name = dto.Name,
-                Description = dto.Description,
-                Price = dto.Price,
-                Photo = dto.Photo,
+                Name = menuItemData.Name,
+                Description = menuItemData.Description,
+                Price = menuItemData.Price,
+                PhotoUrl = photoUrl,
                 CreatedAt = DateTime.UtcNow,
             };
 
@@ -49,15 +58,19 @@ namespace NearU_Backend_Revised.Services
             return MapToResponse(created);
         }
 
-        public async Task<MenuItemResponse?> UpdateItemAsync(string id, UpdateMenuItem dto)
+        public async Task<MenuItemResponse?> UpdateItemAsync(string id, UpdateMenuItem menuItemData)
         {
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
 
-            item.Name = dto.Name ?? item.Name;
-            item.Description = dto.Description ?? item.Description;
-            item.PhotoUrl = dto.PhotoUrl ?? item.PhotoUrl;
-            item.Price = dto.Price ?? item.Price;
+            item.Name = menuItemData.Name ?? item.Name;
+            item.Description = menuItemData.Description ?? item.Description;
+            item.Price = menuItemData.Price ?? item.Price;
+
+            if (menuItemData.Photo != null)
+            {
+                item.PhotoUrl = await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
+            }
 
             var updated = await _itemrepository.UpdateAsync(item);
             if (updated == null) retun null;
