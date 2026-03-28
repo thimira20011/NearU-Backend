@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace NearU_Backend_Revised.Models
 {
     public class FoodShop
     {
         [Key]
-        public string Id { get; set; } null!;
+        public string Id { get; set; } = null!;
 
         [Required]
         [MaxLength(100)]
@@ -19,5 +20,8 @@ namespace NearU_Backend_Revised.Models
         public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation property for menu items
+        public virtual ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 }
