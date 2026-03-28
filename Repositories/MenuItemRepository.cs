@@ -5,19 +5,19 @@ using NearU_Backend_Revised.Repositories.Interfaces;
 
 namespace NearU_Backend_Revised.Repositories
 {
-    pubilc class MenuItemRepository : IMenuItemRepository
+    public class MenuItemRepository : IMenuItemRepository
     {
-        public readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         
         public MenuItemRepository(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<MenuItem>> GetShopById(string shopId)
+        public async Task<IEnumerable<MenuItem>> GetByShopIdAsync(string shopId)
         {
-            return await _context.Menuitems
-                .Where(mi => mi.FoodShop.Id == shopId)
+            return await _context.MenuItems
+                .Where(mi => mi.FoodShopId == shopId)
                 .OrderBy(mi => mi.Name)
                 .ToListAsync();
         }
