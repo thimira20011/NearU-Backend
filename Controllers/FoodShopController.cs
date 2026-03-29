@@ -19,24 +19,24 @@ namespace NearU_Backend_Revised.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var shops = await _service.GetAllFoodShopsAsync();
+            var shops = await _service.GetAllShopsAsync();
             return Ok(shops);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var shop = await _service.GetFoodShopByIdAsync(id);
+            var shop = await _service.GetShopByIdAsync(id);
             if (shop == null)
                 return NotFound(new { message = "Shop not found" });
-            return ok(shop);
+            return Ok(shop);
         }
 
         [HttpPost]
         [Consumes("multipart/form-data")] //accept form data for image upload not json
         public async Task<IActionResult> Create([FromForm] CreateFoodShop request)
         {
-            var shop = await _service.CreateFoodShopAsync(request);
+            var shop = await _service.CreateShopAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = shop.Id }, shop);
         }
 
@@ -44,7 +44,7 @@ namespace NearU_Backend_Revised.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(string id, [FromForm] UpdateFoodShop request)
         {
-            var shop = await _service.UpdateFoodShopAsync(id, request);
+            var shop = await _service.UpdateShopAsync(id, request);
             if (shop == null)
                 return NotFound(new { message = "Shop not found" });
             return Ok(shop);
@@ -53,7 +53,7 @@ namespace NearU_Backend_Revised.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            car deleted = await _service.DeleteFoodShopAsync(id);
+            var deleted = await _service.DeleteShopAsync(id);
             if (!deleted)
                 return NotFound(new { message = "Shop not found" });
             return NoContent(); //204 successful delete

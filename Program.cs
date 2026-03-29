@@ -2,11 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using NearU_Backend_Revised.Configuration;
 using NearU_Backend_Revised.Data;
 using NearU_Backend_Revised.Services;
+using NearU_Backend_Revised.Services.Interfaces;
 using NearU_Backend_Revised.Repositories;
+using NearU_Backend_Revised.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using NearU_Backend_Revised.Services.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,6 +78,13 @@ builder.Services.Configure<ImageKitSetting>(
 //register image service
 builder.Services.AddScoped<IImageService, ImageService>();
 
+
+// Food feature
+builder.Services.AddScoped<IFoodShopRepository, FoodShopRepository>();
+builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IFoodShopService, FoodShopService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Configure Database (PostgreSQL only)
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");

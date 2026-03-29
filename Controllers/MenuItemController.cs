@@ -19,14 +19,14 @@ namespace NearU_Backend_Revised.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(string shopId)
         {
-            var items = await _service.GetMenuItemsByShopIdAsync(shopId);
+            var items = await _service.GetItemsByShopAsync(shopId);
             return Ok(items);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string shopId, string id)
         {
-            var item = await _service.GetMenuItemByIdAsync(shopId, id);
+            var item = await _service.GetItemByIdAsync(id);
             if (item == null)
                 return NotFound(new { message = "Item not found" });
             return Ok(item);
@@ -46,7 +46,7 @@ namespace NearU_Backend_Revised.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(string shopId, string id, [FromForm] UpdateMenuItem request)
         {
-            var item = await _service.UpdateItemAsync(shopId, id, request);
+            var item = await _service.UpdateItemAsync(id, request);
             if (item == null)
                 return NotFound(new { message = "Shop not found" });
             return Ok(item);
