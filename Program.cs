@@ -18,6 +18,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+              .SetIsOriginAllowed(origin => origin.EndsWith("up.railway.app") || origin.StartsWith("http://localhost"))
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
