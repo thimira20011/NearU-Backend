@@ -60,10 +60,9 @@ namespace NearU_Backend_Revised.Services
             if (shop == null) return null;
              
             shop.Name = foodShopData.Name ?? shop.Name!; //use left if not null otherwise use right
-            shop.Description = foodShopData.Description;
-            shop.Address = foodShopData.Address;
-            shop.PhoneNumber = foodShopData.PhoneNumber;
-            shop.PhotoUrl = foodShopData.PhotoUrl;
+            shop.Description = foodShopData.Description ?? shop.Description;
+            shop.Address = foodShopData.Address ?? shop.Address;
+            shop.PhoneNumber = foodShopData.PhoneNumber ?? shop.PhoneNumber;
 
             if (foodShopData.Photo != null)
             {
