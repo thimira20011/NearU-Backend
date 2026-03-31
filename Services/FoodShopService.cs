@@ -84,7 +84,7 @@ namespace NearU_Backend_Revised.Services
             return new FoodShopResponse
             {
                 Id = shop.Id,
-                Name = shop.Id,
+                Name = shop.Name,
                 Description = shop.Description,
                 Address = shop.Address,
                 PhoneNumber = shop.PhoneNumber,
