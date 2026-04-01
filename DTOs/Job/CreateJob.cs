@@ -10,7 +10,7 @@ namespace NearU_Backend_Revised.DTOs.Job
         [Required(ErrorMessage = "Company name is required")]
         public string Company { get; set; } = null!;
 
-        [Required(ErrorMessage = "Location  is required")]
+        [Required(ErrorMessage = "Location is required")]
         public string Location { get; set; } = null!;
 
         [Required(ErrorMessage = "Pay information is required")]
@@ -22,7 +22,7 @@ namespace NearU_Backend_Revised.DTOs.Job
         [Required(ErrorMessage = "Job category is required")]
         public string Category { get; set; } = null!;
 
-        public string Logo { get; set; }
+        public string? Logo { get; set; }
 
         [Required(ErrorMessage = "Job description is required")]
         public string Description { get; set; } = null!;
@@ -32,6 +32,9 @@ namespace NearU_Backend_Revised.DTOs.Job
         public List<string>? Requirements { get; set; }
 
         public List<string>? Tags { get; set; }
+        public string? Requirements { get; set; }
+
+        public string? Tags { get; set; }
 
         public bool IsNew { get; set; } = true;
     }

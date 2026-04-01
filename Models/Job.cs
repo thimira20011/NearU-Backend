@@ -30,7 +30,7 @@ namespace NearU_Backend_Revised.Models
 
         [Required]
         [MaxLength(50)]
-        public string category { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public string? Logo { get; set; }
 
         [Required]
