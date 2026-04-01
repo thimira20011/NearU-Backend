@@ -18,7 +18,7 @@ namespace NearU_Backend_Revised.Services
             var jobs = await _repository.GetAllJobsAsync();
             return jobs.Select(j => MapToResponse(j));
         }
-             public async Task<IEnumerable<JobResponse>> GetNewJobsAsync()
+        public async Task<IEnumerable<JobResponse>> GetNewJobsAsync()
         {
             var jobs = await _repository.GetNewJobsAsync();
             return jobs.Select(j => MapToResponse(j));
@@ -35,7 +35,7 @@ namespace NearU_Backend_Revised.Services
             return MapToResponse(job);
         }
 
-        public async Task<JobResponse> CreateJobAsync(CreateJob dto,string userId)
+        public async Task<JobResponse> CreateJobAsync(CreateJob dto, string userId)
         {
             var job = new Job
             {
@@ -68,7 +68,7 @@ namespace NearU_Backend_Revised.Services
             if (job == null) return null;
 
             if (job.PostedByUserId != userId)
-                throw new UnauthorizedAccessException ("You can only update your own job postings.");
+                throw new UnauthorizedAccessException("You can only update your own job postings.");
 
             if (dto.Title != null) job.Title = dto.Title;
             if (dto.Company != null) job.Company = dto.Company;
@@ -152,5 +152,6 @@ namespace NearU_Backend_Revised.Services
 
             return dateTime.ToString("MMM dd, yyyy");
         }
+    }
 }
         
