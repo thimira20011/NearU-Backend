@@ -11,6 +11,13 @@ namespace NearU_Backend_Revised.Services
     {
         private readonly ImageKitSetting _settings;
 
+        //allowed file types
+        private readonly string[] _allowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+        private readonly string[] _allowedMimeTypes = { "image/jpeg", "image/png", "image/webp" };
+
+        //max file size = 5mb
+        private const long MaxFileSizeBytes = 5 * 1024 * 1024;
+
         public ImageService(IOptions<ImageKitSetting> settings) //IOptions<ImageKitSetting> reads from appsetting auto
         {
             _settings = settings.Value;
@@ -18,6 +25,13 @@ namespace NearU_Backend_Revised.Services
 
         public async Task<string> UploadImageAsync(IFormFile file, string folder)
         {
+            if (file.Length > MaxFileSizeBytes)
+                throw new InvalidOperationException("Only jpg, jpeg, png, webp files are allowed");
+
+            if (!_allowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
+                throw new InvalidOperationException("Invalid file type");
+
+
             using var memoryStream = new MemoryStream(); //convert file to raw bytes
 
             await file.CopyToAsync(memoryStream); //copy file contents to memory stream
@@ -31,7 +45,7 @@ namespace NearU_Backend_Revised.Services
                 _settings.UrlEndpoint
                 );
 
-            var fileName = $"{Guid.NewGuid()}_{Path.GetExtension(file.FileName)}"; //generate unique file name
+            var fileName = $"{Guid.NewGuid()}{extension}"; //generate unique file name
 
             var uploadRequest = new FileCreateRequest
             {

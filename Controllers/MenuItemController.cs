@@ -29,6 +29,10 @@ namespace NearU_Backend_Revised.Controllers
             var item = await _service.GetItemByIdAsync(id);
             if (item == null)
                 return NotFound(new { message = "Item not found" });
+
+            if (item.FoodShopId != shopId)
+                return NotFound(new { message = "Item not found in this shop" });
+
             return Ok(item);
         }
 
@@ -46,14 +50,22 @@ namespace NearU_Backend_Revised.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(string shopId, string id, [FromForm] UpdateMenuItem request)
         {
+            var existing = await _service.GetByIdAsync(id);
+            if (existing == null)
+                return NotFound(new { message = "Item not found" });
+
+            if (existing.FoodShopId != shopId)
+                return NotFound(new { message = "Item not found in this shop" });
+
             var item = await _service.UpdateItemAsync(id, request);
             if (item == null)
-                return NotFound(new { message = "Shop not found" });
+                return NotFound(new { message = "Item not found" });
+
             return Ok(item);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delte(string shopId, string id)
+        public async Task<IActionResult> Delete(string shopId, string id)
         {
             var deleted = await _service.DeleteItemAsync(id);
             if (!deleted)

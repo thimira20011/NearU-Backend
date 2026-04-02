@@ -37,6 +37,10 @@ namespace NearU_Backend_Revised.Controllers
         public async Task<IActionResult> Create([FromForm] CreateFoodShop request)
         {
             var shop = await _service.CreateShopAsync(request);
+
+            if (shop == null)
+                return StatusCode(500, new { message = "Failed to create shop" });
+
             return CreatedAtAction(nameof(GetById), new { id = shop.Id }, shop);
         }
 
