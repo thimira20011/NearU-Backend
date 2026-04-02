@@ -13,6 +13,6 @@ namespace NearU_Backend_Revised.DTOs.FoodShop
 
 		public string? PhoneNumber { get; set; }
 
-		public string? PhotoUrl { get; set; }
+		public IFormFile? Photo { get; set; }
     }
 }

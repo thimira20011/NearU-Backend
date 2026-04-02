@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NearU_Backend_Revised.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NearU_Backend_Revised.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328155909_AddFoodShopAndMenuItems")]
+    partial class AddFoodShopAndMenuItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,93 +59,6 @@ namespace NearU_Backend_Revised.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FoodShops");
-
-                });
-
-            modelBuilder.Entity("NearU_Backend_Revised.Models.Job", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Company")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<bool>("IsNew")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("JobType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Logo")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LongDescription")
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.Property<string>("PayRange")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("PostedByName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("PostedByUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Requirements")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Tags")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Category");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("IsNew");
-
-                    b.HasIndex("PostedByUserId");
-
-                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("NearU_Backend_Revised.Models.MenuItem", b =>
@@ -263,17 +179,6 @@ namespace NearU_Backend_Revised.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("NearU_Backend_Revised.Models.Job", b =>
-                {
-                    b.HasOne("NearU_Backend_Revised.Models.User", "PostedByUser")
-                        .WithMany()
-                        .HasForeignKey("PostedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("PostedByUser");
                 });
 
             modelBuilder.Entity("NearU_Backend_Revised.Models.MenuItem", b =>

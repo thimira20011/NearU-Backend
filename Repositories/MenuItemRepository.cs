@@ -17,7 +17,7 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<IEnumerable<MenuItem>> GetByShopIdAsync(string shopId)
         {
             return await _context.MenuItems
-                .Where(mi => mi.FoodShopId == shopId)
+                .Where(mi => mi.FoodShop == shopId)
                 .OrderBy(mi => mi.Name)
                 .ToListAsync();
         }
@@ -25,7 +25,7 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<MenuItem?> GetByIdAsync(string id)
         {
             return await _context.MenuItems
-                .FindAsync(id);
+                .FirstOrDefaultAsync(mi => mi.Id == id);
         }
 
         public async Task<MenuItem> CreateAsync(MenuItem item)

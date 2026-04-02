@@ -23,5 +23,7 @@ namespace NearU_Backend_Revised.Models
 
         [ForeignKey("FoodShopId")]
         public virtual FoodShop? FoodShop { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

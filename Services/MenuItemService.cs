@@ -9,11 +9,13 @@ namespace NearU_Backend_Revised.Services
     {
         private readonly IMenuItemRepository _itemrepository;
         private readonly IFoodShopRepository _shoprepository;
+        private readonly IImageService _imageService;
 
-        public MenuItemService(IMenuItemRepository itemrepository, IFoodShopRepository shoprepository)
+        public MenuItemService(IMenuItemRepository itemrepository, IFoodShopRepository shoprepository, IImageService imageService)
         {
             _itemrepository = itemrepository;
             _shoprepository = shoprepository;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<MenuItemResponse>> GetItemsByShopAsync(string shopId)
@@ -26,47 +28,56 @@ namespace NearU_Backend_Revised.Services
         {
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
-            return MapToResponse(item); // Corrected typo
+            return MapToResponse(item);
         }
 
-        public async Task<MenuItemResponse?> CreateItemAsync(string shopId, CreateMenuItem dto) // Corrected 'stirng'
+        public async Task<MenuItemResponse?> CreateItemAsync(string shopId, CreateMenuItem menuItemData)
         {
             var shopExists = await _shoprepository.GetByIdAsync(shopId);
-            if (shopExists == null) return null; // Corrected check
+            if (shopExists == null) return null;
+
+            string? photoUrl = null;
+            if (menuItemData.Photo != null)
+            {
+                photoUrl = await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
+            }
 
             var item = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
                 FoodShopId = shopId,
-                Name = dto.Name,
-                Description = dto.Description,
-                Price = dto.Price,
-                PhotoUrl = dto.PhotoUrl, // Corrected property
+                Name = menuItemData.Name,
+                Description = menuItemData.Description,
+                Price = menuItemData.Price,
+                PhotoUrl = photoUrl,
+                CreatedAt = DateTime.UtcNow,
+
             };
 
             var created = await _itemrepository.CreateAsync(item);
             return MapToResponse(created);
         }
 
-        public async Task<MenuItemResponse?> UpdateItemAsync(string id, UpdateMenuItem dto)
+        public async Task<MenuItemResponse?> UpdateItemAsync(string id, UpdateMenuItem menuItemData)
         {
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
 
-            item.Name = dto.Name ?? item.Name;
-            item.Description = dto.Description ?? item.Description;
-            item.PhotoUrl = dto.PhotoUrl ?? item.PhotoUrl;
-            if (dto.Price.HasValue)
+            item.Name = menuItemData.Name ?? item.Name;
+            item.Description = menuItemData.Description ?? item.Description;
+            item.Price = menuItemData.Price ?? item.Price;
+
+            if (menuItemData.Photo != null)
             {
-                item.Price = dto.Price.Value;
+                item.PhotoUrl = await _imageService.UploadImageAsync(menuItemData.Photo, "menuitems");
             }
 
             var updated = await _itemrepository.UpdateAsync(item);
-            if (updated == null) return null; // Corrected typo
+            if (updated == null) return null;
             return MapToResponse(updated);
         }
 
-        public async Task<bool> DeleteItemAsync(string id) // Corrected signature
+        public async Task<bool> DeleteItemAsync(string id)
         {
             return await _itemrepository.DeleteAsync(id);
         }
@@ -85,3 +96,4 @@ namespace NearU_Backend_Revised.Services
         }
     }
 }
+
