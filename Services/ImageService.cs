@@ -26,7 +26,9 @@ namespace NearU_Backend_Revised.Services
         public async Task<string> UploadImageAsync(IFormFile file, string folder)
         {
             if (file.Length > MaxFileSizeBytes)
-                throw new InvalidOperationException("Only jpg, jpeg, png, webp files are allowed");
+                throw new InvalidOperationException("File size exceed 5MB limit");
+
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
             if (!_allowedMimeTypes.Contains(file.ContentType.ToLowerInvariant()))
                 throw new InvalidOperationException("Invalid file type");

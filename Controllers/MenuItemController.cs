@@ -50,7 +50,7 @@ namespace NearU_Backend_Revised.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(string shopId, string id, [FromForm] UpdateMenuItem request)
         {
-            var existing = await _service.GetByIdAsync(id);
+            var existing = await _service.GetItemByIdAsync(id);
             if (existing == null)
                 return NotFound(new { message = "Item not found" });
 
