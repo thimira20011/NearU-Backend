@@ -98,6 +98,19 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# ASP.NET Core & Entity Framework
+appsettings.Local.json
+appsettings.Development.json
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Environment Variables
+.env
+.env.*
+
 # Chutzpah Test files
 _Chutzpah*
 
