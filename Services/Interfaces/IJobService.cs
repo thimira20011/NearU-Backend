@@ -7,6 +7,8 @@ namespace NearU_Backend_Revised.Services.Interfaces
         Task<IEnumerable<JobResponse>> GetAllJobsAsync();
         Task<IEnumerable<JobResponse>> GetNewJobsAsync();
         Task<IEnumerable<JobResponse>> GetJobsByCategoryAsync(string category);
+        Task<IEnumerable<JobResponse>> GetJobsByTypeAsync(string jobType);
+        Task<IEnumerable<JobResponse>> SearchJobsAsync(string searchTerm);
         Task<JobResponse?> GetJobByIdAsync(string id);
         Task<JobResponse> CreateJobAsync(CreateJob dto, string userId);
         Task<JobResponse?> UpdateJobAsync(string id, UpdateJob dto, string userId);

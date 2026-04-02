@@ -24,8 +24,7 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var jobs = await _jobservice.GetAllJobsAsync();
-                return
-                Ok(ApiResponse<IEnumberable<JobResponse>>.SuccessResponse("Jobs retrived successfully", jobs));
+                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse("Jobs retrieved successfully", jobs));
             }
             catch (Exception ex)
             {
@@ -39,7 +38,7 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var jobs = await _jobservice.GetNewJobsAsync();
-                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse("New jobs retrived successfully", jobs));
+                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse("New jobs retrieved successfully", jobs));
             }
             catch (Exception ex)
             {
@@ -54,13 +53,45 @@ namespace NearU_Backend_Revised.Controllers
             try
             {
                 var jobs = await _jobservice.GetJobsByCategoryAsync(category);
-                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse($"Jobs in category '{category}' retrived successfully", jobs));
+                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse($"Jobs in category '{category}' retrieved successfully", jobs));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
             }
         }
+
+        [HttpGet("type/{jobType}")]
+        public async Task<IActionResult> GetJobsByType(string jobType)
+        {
+            try
+            {
+                var jobs = await _jobservice.GetJobsByTypeAsync(jobType);
+                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse($"Jobs of type '{jobType}' retrieved successfully", jobs));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
+            }
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchJobs([FromQuery] string q)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(q))
+                    return BadRequest(ApiResponse<object>.FailResponse("Search term is required"));
+
+                var jobs = await _jobservice.SearchJobsAsync(q);
+                return Ok(ApiResponse<IEnumerable<JobResponse>>.SuccessResponse($"Search results for '{q}'", jobs));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetJobById(string id)
         {
@@ -69,7 +100,7 @@ namespace NearU_Backend_Revised.Controllers
                 var job = await _jobservice.GetJobByIdAsync(id);
                 if (job == null)
                     return NotFound(ApiResponse<object>.FailResponse("Job not found"));
-                return Ok(ApiResponse<JobResponse>.SuccessResponse("Job retrived successfully", job));
+                return Ok(ApiResponse<JobResponse>.SuccessResponse("Job retrieved successfully", job));
             }
             catch (Exception ex)
             {
@@ -78,37 +109,36 @@ namespace NearU_Backend_Revised.Controllers
         }
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateJob(CreateJob dto)
+        public async Task<IActionResult> CreateJob([FromBody] CreateJob dto)
         {
             try
             {
-                var userId = User.FindFirstValue("userId")?.Value;
+                var userId = User.FindFirstValue("userId");
                 if (string.IsNullOrEmpty(userId))
-                    return
-                        Unauthorized(ApiResponse<object>.FailResponse("User not authenticated"));
+                    return Unauthorized(ApiResponse<object>.FailResponse("User not authenticated"));
+
                 var job = await _jobservice.CreateJobAsync(dto, userId);
-                return
-                    Created($"/api/job/{job.Id}", ApiResponse<JobResponse>.SuccessResponse("Job created successfully", job));
+                return Created($"/api/job/{job.Id}", ApiResponse<JobResponse>.SuccessResponse("Job created successfully", job));
             }
             catch (Exception ex)
             {
                 return BadRequest(ApiResponse<object>.FailResponse(ex.Message));
-
             }
-
         }
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateJob(string id, UpdateJob dto)
+        public async Task<IActionResult> UpdateJob(string id, [FromBody] UpdateJob dto)
         {
             try
             {
-                var userId = User.FindFirstValue("userId")?.Value;
+                var userId = User.FindFirstValue("userId");
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized(ApiResponse<object>.FailResponse("User not authenticated"));
+
                 var job = await _jobservice.UpdateJobAsync(id, dto, userId);
                 if (job == null)
                     return NotFound(ApiResponse<object>.FailResponse("Job not found or user not authorized"));
+
                 return Ok(ApiResponse<JobResponse>.SuccessResponse("Job updated successfully", job));
             }
             catch (UnauthorizedAccessException ex)
@@ -126,13 +156,13 @@ namespace NearU_Backend_Revised.Controllers
         {
             try
             {
-                var userId = User.FindFirstValue("userId")?.Value;
+                var userId = User.FindFirstValue("userId");
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized(ApiResponse<object>.FailResponse("User not authenticated"));
                 var success = await _jobservice.DeleteJobAsync(id, userId);
                 if (!success)
                     return NotFound(ApiResponse<object>.FailResponse("Job not found or user not authorized"));
-                return Ok(ApiResponse<object>.SuccessResponse("Job deleted successfully", null));
+                return Ok(ApiResponse<object>.SuccessResponse("Job deleted successfully", new { }));
             }
             catch (UnauthorizedAccessException ex)
             {

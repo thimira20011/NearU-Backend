@@ -14,7 +14,7 @@ namespace NearU_Backend_Revised.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Job>> GetAllAsync()
+        public async Task<IEnumerable<Job>> GetAllJobsAsync()
         {
             return await _context.Jobs
                 .Include(j => j.PostedByUser)
@@ -31,12 +31,33 @@ namespace NearU_Backend_Revised.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Job>> GetByCategoryAsync(string
-category)
+        public async Task<IEnumerable<Job>> GetJobsByCategoryAsync(string category)
         {
             return await _context.Jobs
                 .Include(j => j.PostedByUser)
                 .Where(j => j.Category == category)
+                .OrderByDescending(j => j.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Job>> GetJobsByTypeAsync(string jobType)
+        {
+            return await _context.Jobs
+                .Include(j => j.PostedByUser)
+                .Where(j => j.JobType == jobType)
+                .OrderByDescending(j => j.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Job>> SearchJobsAsync(string searchTerm)
+        {
+            var pattern = $"%{searchTerm}%";
+            return await _context.Jobs
+                .Include(j => j.PostedByUser)
+                .Where(j => EF.Functions.ILike(j.Title, pattern) ||
+                            EF.Functions.ILike(j.Company, pattern) ||
+                            EF.Functions.ILike(j.Location, pattern) ||
+                            EF.Functions.ILike(j.Description, pattern))
                 .OrderByDescending(j => j.CreatedAt)
                 .ToListAsync();
         }
