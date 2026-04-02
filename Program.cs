@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NearU_Backend_Revised.Configuration;
 using NearU_Backend_Revised.Data;
+using NearU_Backend_Revised.Models;
 using NearU_Backend_Revised.Services;
 using NearU_Backend_Revised.Services.Interfaces;
 using NearU_Backend_Revised.Repositories;
@@ -11,7 +13,20 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(e => e.Value?.Errors.Count > 0)
+                .SelectMany(e => e.Value!.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            var response = ApiResponse<object>.FailResponse(string.Join("; ", errors));
+            return new BadRequestObjectResult(response);
+        };
+    });
 builder.Services.AddOpenApi();
 
 // Configure CORS

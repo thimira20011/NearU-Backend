@@ -113,9 +113,6 @@ namespace NearU_Backend_Revised.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ApiResponse<object>.FailResponse("Invalid job data"));
-
                 var userId = User.FindFirstValue("userId");
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized(ApiResponse<object>.FailResponse("User not authenticated"));
