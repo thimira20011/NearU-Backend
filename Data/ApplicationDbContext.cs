@@ -156,7 +156,8 @@ namespace NearU_Backend_Revised.Data
                     .HasMaxLength(2000);
 
                 entity.Property(j => j.PostedByName)
-                    .IsRequired();
+                    .IsRequired()
+                    .HasMaxLength(100);
 
                 entity.Property(j => j.PostedByUserId)
                     .IsRequired();
