@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
@@ -84,6 +85,22 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("userId");
     });
 });
+
+//register imagekit settings
+builder.Services.Configure<ImageKitSetting>(
+    builder.Configuration.GetSection("Imagekit")
+);
+
+//register image service
+builder.Services.AddScoped<IImageService, ImageService>();
+
+
+// Food feature
+builder.Services.AddScoped<IFoodShopRepository, FoodShopRepository>();
+builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IFoodShopService, FoodShopService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Configure Database (PostgreSQL only)
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");

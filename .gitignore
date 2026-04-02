@@ -414,3 +414,10 @@ appsettings.*.json
 
 # Untracked unwanted directories
 Migrations/code/
+
+
+appsettings.Development.json
+**/user-secrets/
+bin/
+obj/
+out/

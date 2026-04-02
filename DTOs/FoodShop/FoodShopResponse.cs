@@ -13,5 +13,7 @@ namespace NearU_Backend_Revised.DTOs.FoodShop
         public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public string? PhotoUrl { get; set; }
     }
 }
