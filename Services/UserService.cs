@@ -90,7 +90,7 @@ namespace NearU_Backend_Revised.Services
                 throw new Exception("Invalid or expired refresh token");
 
             // Get user to generate new access token
-            var user = await _userRepo.GetUserById(newRefreshToken.UserId);
+            var user = await _userRepo.GetByIdAsync(newRefreshToken.UserId);
             if (user == null)
                 throw new Exception("User not found");
 
@@ -113,7 +113,7 @@ namespace NearU_Backend_Revised.Services
 
         public async Task<User?> GetUserById(string id)
         {
-            return await _userRepo.GetUserById(id);
+            return await _userRepo.GetByIdAsync(id);
         }
 
         /// <summary>

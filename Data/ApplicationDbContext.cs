@@ -137,11 +137,11 @@ namespace NearU_Backend_Revised.Data
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(j => j.Pay)
+                entity.Property(j => j.PayRange)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(j => j.Type)
+                entity.Property(j => j.JobType)
                     .IsRequired()
                     .HasMaxLength(50);
 
@@ -154,6 +154,9 @@ namespace NearU_Backend_Revised.Data
 
                 entity.Property(j => j.LongDescription)
                     .HasMaxLength(2000);
+
+                entity.Property(j => j.PostedByName)
+                    .IsRequired();
 
                 entity.Property(j => j.PostedByUserId)
                     .IsRequired();
