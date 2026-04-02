@@ -135,7 +135,7 @@ namespace NearU_Backend_Revised.Data
 
                 entity.Property(j => j.Location)
                     .IsRequired()
-                    .HasMaxLength(200);
+                    .HasMaxLength(100);
 
                 entity.Property(j => j.PayRange)
                     .IsRequired()
