@@ -30,6 +30,7 @@ namespace NearU_Backend_Revised.Services
         }
 
         public async Task<FoodShopResponse?> CreateShopAsync(CreateFoodShop foodShopData)
+
         {
             string? photoUrl = null;
 
@@ -92,6 +93,5 @@ namespace NearU_Backend_Revised.Services
                 CreatedAt = shop.CreatedAt,
             };
         }
-        
     }
 }

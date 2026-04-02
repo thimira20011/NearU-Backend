@@ -51,6 +51,7 @@ namespace NearU_Backend_Revised.Services
                 Price = menuItemData.Price,
                 PhotoUrl = photoUrl,
                 CreatedAt = DateTime.UtcNow,
+
             };
 
             var created = await _itemrepository.CreateAsync(item);
@@ -81,7 +82,7 @@ namespace NearU_Backend_Revised.Services
             return await _itemrepository.DeleteAsync(id);
         }
 
-        private MenuItemResponse MapToResponse(MenuItem item)
+        private static MenuItemResponse MapToResponse(MenuItem item) // Made static for better performance
         {
             return new MenuItemResponse
             {
@@ -91,8 +92,8 @@ namespace NearU_Backend_Revised.Services
                 Description = item.Description,
                 Price = item.Price,
                 PhotoUrl = item.PhotoUrl,
-                CreatedAt = item.CreatedAt,
             };
         }
     }
 }
+

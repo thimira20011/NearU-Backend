@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 namespace NearU_Backend_Revised.Models
 {
@@ -21,8 +22,9 @@ namespace NearU_Backend_Revised.Models
         public string? PhotoUrl { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         public List<MenuItem> MenuItems { get; set; } = new();
 
+        // Navigation property for menu items
+        public virtual ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 }

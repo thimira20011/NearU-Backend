@@ -420,3 +420,4 @@ appsettings.Development.json
 **/user-secrets/
 bin/
 obj/
+out/

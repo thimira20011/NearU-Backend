@@ -7,7 +7,7 @@ namespace NearU_Backend_Revised.Repositories
 {
     public class MenuItemRepository : IMenuItemRepository
     {
-        public readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         
         public MenuItemRepository(ApplicationDbContext context)
         {
