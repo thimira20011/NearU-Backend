@@ -1,0 +1,15 @@
+using NearU_Backend_Revised.DTOs.Job;
+
+namespace NearU_Backend_Revised.Services.Interfaces
+{
+    public interface IJobService
+    {
+        Task<IEnumerable<JobResponse>> GetAllJobsAsync();
+        Task<IEnumerable<JobResponse>> GetNewJobsAsync();
+        Task<IEnumerable<JobResponse>> GetJobsByCategoryAsync(string category);
+        Task<JobResponse?> GetJobByIdAsync(string id);
+        Task<JobResponse> CreateJobAsync(CreateJob dto, string userId);
+        Task<JobResponse?> UpdateJobAsync(string id, UpdateJob dto, string userId);
+        Task<bool> DeleteJobAsync(string id, string userId);
+    }
+}
