@@ -51,13 +51,13 @@ namespace NearU_Backend_Revised.Repositories
 
         public async Task<IEnumerable<Job>> SearchJobsAsync(string searchTerm)
         {
-            var lowerSearchTerm = searchTerm.ToLower();
+            var pattern = $"%{searchTerm}%";
             return await _context.Jobs
                 .Include(j => j.PostedByUser)
-                .Where(j => j.Title.ToLower().Contains(lowerSearchTerm) ||
-                           j.Company.ToLower().Contains(lowerSearchTerm) ||
-                           j.Location.ToLower().Contains(lowerSearchTerm) ||
-                           j.Description.ToLower().Contains(lowerSearchTerm))
+                .Where(j => EF.Functions.ILike(j.Title, pattern) ||
+                            EF.Functions.ILike(j.Company, pattern) ||
+                            EF.Functions.ILike(j.Location, pattern) ||
+                            EF.Functions.ILike(j.Description, pattern))
                 .OrderByDescending(j => j.CreatedAt)
                 .ToListAsync();
         }
