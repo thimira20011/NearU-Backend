@@ -153,12 +153,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// CORS must be before Authentication/Authorization
 app.UseCors("AllowFrontend");
-
-// Remove HTTPS redirection for Railway (Railway handles this)
-// app.UseHttpsRedirection();
-
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
