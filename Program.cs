@@ -21,7 +21,9 @@ builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 // Log configuration for debugging
 Console.WriteLine("=== Configuration Debug ===");
 Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
-Console.WriteLine($"ConnectionString: {builder.Configuration.GetConnectionString("PostgreSQL")?.Substring(0, Math.Min(50, builder.Configuration.GetConnectionString("PostgreSQL")?.Length ?? 0))}...");
+var connStr = builder.Configuration.GetConnectionString("PostgreSQL");
+Console.WriteLine($"ConnectionString exists: {!string.IsNullOrEmpty(connStr)}");
+if (!string.IsNullOrEmpty(connStr)) Console.WriteLine($"ConnectionString preview: {connStr.Substring(0, Math.Min(50, connStr.Length))}...");
 Console.WriteLine($"JWT SecretKey Length: {builder.Configuration["JwtSettings:SecretKey"]?.Length ?? 0}");
 Console.WriteLine($"JWT Issuer: {builder.Configuration["JwtSettings:Issuer"]}");
 Console.WriteLine("===========================");
@@ -47,23 +49,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-                  "http://localhost:3000",
-                  "http://localhost:5173",
-                  "https://nearu-frontend-production.up.railway.app"
-              )
-              .SetIsOriginAllowed(origin =>
+        policy.SetIsOriginAllowed(origin =>
               {
-                  var allowed = origin.StartsWith("http://localhost") ||
+                  return origin.StartsWith("http://localhost") ||
                          origin.StartsWith("https://localhost") ||
                          origin.EndsWith(".up.railway.app");
-                  Console.WriteLine($"CORS Check - Origin: {origin}, Allowed: {allowed}");
-                  return allowed;
               })
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials()
-              .WithExposedHeaders("*");
+              .AllowCredentials();
     });
 });
 
@@ -71,6 +65,7 @@ builder.Services.AddCors(options =>
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 if (string.IsNullOrEmpty(jwtSettings?.SecretKey))
 {
+    Console.WriteLine("ERROR: JWT SecretKey is not configured!");
     throw new InvalidOperationException("JWT SecretKey is not configured. Please set JwtSettings__SecretKey environment variable.");
 }
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
@@ -134,6 +129,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 if (string.IsNullOrEmpty(connectionString))
 {
+    Console.WriteLine("ERROR: PostgreSQL connection string is not configured!");
     throw new InvalidOperationException("PostgreSQL connection string is not configured. Please set ConnectionStrings__PostgreSQL environment variable.");
 }
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -177,20 +173,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// Add logging middleware to debug requests
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"Request: {context.Request.Method} {context.Request.Path} from {context.Request.Headers["Origin"]}");
-    await next();
-    Console.WriteLine($"Response: {context.Response.StatusCode}");
-});
-
-// CORS must be first, before Authentication/Authorization
 app.UseCors("AllowFrontend");
-
-// Remove HTTPS redirection for Railway (Railway handles this)
-// app.UseHttpsRedirection();
-
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
