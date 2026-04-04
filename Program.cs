@@ -111,12 +111,8 @@ builder.Services.AddAuthorization(options =>
 
 //register imagekit settings
 builder.Services.Configure<ImageKitSetting>(
-    builder.Configuration.GetSection("Imagekit")
+    builder.Configuration.GetSection("ImageKit")
 );
-
-//register image service
-builder.Services.AddScoped<IImageService, ImageService>();
-
 
 // Food feature
 builder.Services.AddScoped<IFoodShopRepository, FoodShopRepository>();
