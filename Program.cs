@@ -14,6 +14,20 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Kestrel to listen on Railway's PORT
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
+// Log configuration for debugging
+Console.WriteLine("=== Configuration Debug ===");
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+var connStr = builder.Configuration.GetConnectionString("PostgreSQL");
+Console.WriteLine($"ConnectionString exists: {!string.IsNullOrEmpty(connStr)}");
+if (!string.IsNullOrEmpty(connStr)) Console.WriteLine($"ConnectionString preview: {connStr.Substring(0, Math.Min(50, connStr.Length))}...");
+Console.WriteLine($"JWT SecretKey Length: {builder.Configuration["JwtSettings:SecretKey"]?.Length ?? 0}");
+Console.WriteLine($"JWT Issuer: {builder.Configuration["JwtSettings:Issuer"]}");
+Console.WriteLine("===========================");
+
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
     {
@@ -35,8 +49,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
-              .SetIsOriginAllowed(origin => origin.EndsWith("up.railway.app") || origin.StartsWith("http://localhost"))
+        policy.SetIsOriginAllowed(origin =>
+              {
+                  return origin.StartsWith("http://localhost") ||
+                         origin.StartsWith("https://localhost") ||
+                         origin.EndsWith(".up.railway.app");
+              })
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -45,6 +63,11 @@ builder.Services.AddCors(options =>
 
 // Register JWT Settings
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+if (string.IsNullOrEmpty(jwtSettings?.SecretKey))
+{
+    Console.WriteLine("ERROR: JWT SecretKey is not configured!");
+    throw new InvalidOperationException("JWT SecretKey is not configured. Please set JwtSettings__SecretKey environment variable.");
+}
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 // Configure JWT Authentication
@@ -57,7 +80,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.SaveToken = true;
-    options.RequireHttpsMetadata = false; // Set to true in production
+    options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -104,6 +127,11 @@ builder.Services.AddScoped<IImageService, ImageService>();
 
 // Configure Database (PostgreSQL only)
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
+if (string.IsNullOrEmpty(connectionString))
+{
+    Console.WriteLine("ERROR: PostgreSQL connection string is not configured!");
+    throw new InvalidOperationException("PostgreSQL connection string is not configured. Please set ConnectionStrings__PostgreSQL environment variable.");
+}
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseNpgsql(connectionString, npgsqlOptions =>
@@ -145,8 +173,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
