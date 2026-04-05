@@ -39,6 +39,7 @@ namespace NearU_Backend_Revised.Services
                 Id = Guid.NewGuid().ToString(),
                 Username = request.Username,
                 Email = request.Email,
+                MobileNumber = request.MobileNumber,
                 PasswordHash = hashedPassword,
                 Role = "User",
                 CreatedDate = DateTime.UtcNow.ToString("o"),
