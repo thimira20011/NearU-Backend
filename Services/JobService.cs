@@ -154,6 +154,7 @@ namespace NearU_Backend_Revised.Services
                     UserId = job.PostedByUserId,
                     Name = job.PostedByName,
                     Email = job.PostedByUser?.Email ?? "",
+                    MobileNumber = job.PostedByUser?.MobileNumber,
                     Avatar = null
                 },
                 CreatedAt = job.CreatedAt,

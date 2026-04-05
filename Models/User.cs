@@ -25,6 +25,8 @@ public partial class User
 
     public int IsActive { get; set; }
 
+    public string? MobileNumber { get; set; }
+
     [InverseProperty("User")]
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }
