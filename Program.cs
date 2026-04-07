@@ -121,6 +121,12 @@ builder.Services.AddScoped<IFoodShopService, FoodShopService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
+// Accommodation feature
+builder.Services.AddScoped<IAccommodationRepository, AccommodationRepository>();
+builder.Services.AddScoped<IAccommodationItemRepository, AccommodationItemRepository>();
+builder.Services.AddScoped<IAccommodationService, AccommodationService>();
+builder.Services.AddScoped<IAccommodationItemService, AccommodationItemService>();
+
 // Configure Database (PostgreSQL only)
 var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
 if (string.IsNullOrEmpty(connectionString))
