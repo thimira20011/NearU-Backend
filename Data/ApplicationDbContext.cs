@@ -78,25 +78,25 @@ namespace NearU_Backend_Revised.Data
 
             modelBuilder.Entity<Accommodation>(entity =>
             {
-                entity.HasKey(fs => fs.Id);
+                entity.HasKey(acc => acc.Id);
 
-                entity.Property(fs => fs.Name)
+                entity.Property(acc => acc.Name)
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(fs => fs.Description)
+                entity.Property(acc => acc.Description)
                     .HasMaxLength(500);
 
-                entity.Property(fs => fs.Address)
+                entity.Property(acc => acc.Address)
                     .HasMaxLength(200);
 
-                entity.Property(fs => fs.PhoneNumber)
+                entity.Property(acc => acc.PhoneNumber)
                    .HasMaxLength(20);
 
-                entity.Property(fs => fs.CreatedAt)
+                entity.Property(acc => acc.CreatedAt)
                     .HasDefaultValueSql("NOW()");
 
-                entity.HasMany(fs => fs.AccommodationItems)
+                entity.HasMany(acc => acc.AccommodationItems)
                     .WithOne(mi => mi.Accommodation)
                     .HasForeignKey(mi => mi.AccommodationId)
                     .OnDelete(DeleteBehavior.Cascade);
