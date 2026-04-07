@@ -4,7 +4,7 @@ namespace NearU_Backend_Revised.DTOs.Accommodation
 {
 	public class CreateAccommodation
 	{
-		[Required(ErrorMessage = "Shop name is required")]
+		[Required(ErrorMessage = "Accommodation name is required")]
 		public string Name { get; set; } = null!;
 
 		public string? Description { get; set; }
