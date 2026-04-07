@@ -24,8 +24,6 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<Accommodation?> GetByIdAsync(string id)
         {
             return await _context.Accommodations
-
-                .Include(acc => acc.AccommodationItems)  //also fetch AccommodationItems when fetching accommodations
                 .FirstOrDefaultAsync(acc => acc.Id == id);
         }
 

@@ -60,10 +60,10 @@ namespace NearU_Backend_Revised.Services
             var accommodation = await _repository.GetByIdAsync(id);
             if (accommodation == null) return null;
 
-            accommodation.Name = AccommodationData.Name ?? accommodation.Name!; //use left if not null otherwise use right
+            accommodation.Name = !string.IsNullOrWhiteSpace(AccommodationData.Name) ? AccommodationData.Name : accommodation.Name!;
             accommodation.Description = AccommodationData.Description ?? accommodation.Description;
-            accommodation.Address = AccommodationData.Address ?? accommodation.Address;
-            accommodation.PhoneNumber = AccommodationData.PhoneNumber ?? accommodation.PhoneNumber;
+            accommodation.Address = !string.IsNullOrWhiteSpace(AccommodationData.Address) ? AccommodationData.Address : accommodation.Address;
+            accommodation.PhoneNumber = !string.IsNullOrWhiteSpace(AccommodationData.PhoneNumber) ? AccommodationData.PhoneNumber : accommodation.PhoneNumber;
 
             if (AccommodationData.Photo != null)
             {

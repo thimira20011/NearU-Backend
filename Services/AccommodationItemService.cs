@@ -63,7 +63,7 @@ namespace NearU_Backend_Revised.Services
             var item = await _itemrepository.GetByIdAsync(id);
             if (item == null) return null;
 
-            item.Name = AccommodationItemData.Name ?? item.Name;
+            item.Name = !string.IsNullOrWhiteSpace(AccommodationItemData.Name) ? AccommodationItemData.Name : item.Name;
             item.Description = AccommodationItemData.Description ?? item.Description;
             item.Price = AccommodationItemData.Price ?? item.Price;
 
