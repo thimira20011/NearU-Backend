@@ -17,15 +17,15 @@ namespace NearU_Backend_Revised.Repositories
         public async Task<IEnumerable<AccommodationItem>> GetByAccommodationIdAsync(string accommodationId)
         {
             return await _context.AccommodationItems
-                .Where(mi => mi.AccommodationId == accommodationId)
-                .OrderBy(mi => mi.Name)
+                .Where(ai => ai.AccommodationId == accommodationId)
+                .OrderBy(ai => ai.Name)
                 .ToListAsync();
         }
 
         public async Task<AccommodationItem?> GetByIdAsync(string id)
         {
             return await _context.AccommodationItems
-                .FirstOrDefaultAsync(mi => mi.Id == id);
+                .FirstOrDefaultAsync(ai => ai.Id == id);
         }
 
         public async Task<AccommodationItem> CreateAsync(AccommodationItem item)

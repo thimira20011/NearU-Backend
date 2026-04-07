@@ -67,9 +67,16 @@ namespace NearU_Backend_Revised.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string accommodationId, string id)
         {
+            var existing = await _service.GetItemByIdAsync(id);
+            if (existing == null)
+                return NotFound(new { message = "Item not found" });
+
+            if (existing.AccommodationId != accommodationId)
+                return NotFound(new { message = "Item not found in this accommodation" });
+
             var deleted = await _service.DeleteItemAsync(id);
             if (!deleted)
-                return NotFound(new { message = "Item not found" });
+                return NotFound(new { message = "Failed to delete item" });
             return NoContent();
         }
     }    
