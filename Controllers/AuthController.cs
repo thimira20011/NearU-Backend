@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.RateLimiting;
 
 
 namespace NearU_Backend_Revised.Controllers
@@ -38,6 +39,7 @@ namespace NearU_Backend_Revised.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("login-limit")]
         public async Task<IActionResult> Login([FromBody]LoginRequest request)
         {
             try

@@ -9,6 +9,8 @@ using NearU_Backend_Revised.Repositories;
 using NearU_Backend_Revised.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using System.Text;
 
 
@@ -53,7 +55,7 @@ builder.Services.AddCors(options =>
               {
                   return origin.StartsWith("http://localhost") ||
                          origin.StartsWith("https://localhost") ||
-                         origin.EndsWith(".up.railway.app") ||
+                         origin.EndsWith(".up.railway.app") || //Need to be removed out dated link
                          origin.EndsWith(".ondigitalocean.app") ||
                          origin == "https://near-u-frontend-pi.vercel.app" ||
                          origin.EndsWith(".vercel.app");
@@ -61,6 +63,19 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
+    });
+});
+
+// Add Rate Limiting for Login
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("login-limit", options =>
+    {
+        options.PermitLimit = 5;
+        options.Window = TimeSpan.FromMinutes(15);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 0;
     });
 });
 
@@ -93,7 +108,27 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings?.Issuer,
         ValidAudience = jwtSettings?.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings?.SecretKey ?? "")),
-        ClockSkew = TimeSpan.Zero // Remove default 5 minute clock skew
+        ClockSkew = TimeSpan.FromMinutes(5) // Allow 5 minute clock skew
+    };
+
+    // Add events for debugging
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context =>
+        {
+            Console.WriteLine($"Token received: {(string.IsNullOrEmpty(context.Token) ? "No" : "Yes")}");
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine($"Authentication challenge: {context.Error}, {context.ErrorDescription}");
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -184,6 +219,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowFrontend");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
