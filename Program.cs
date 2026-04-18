@@ -58,7 +58,9 @@ builder.Services.AddCors(options =>
                          origin.EndsWith(".up.railway.app") || //Need to be removed out dated link
                          origin.EndsWith(".ondigitalocean.app") ||
                          origin == "https://near-u-frontend-pi.vercel.app" ||
-                         origin.EndsWith(".vercel.app");
+                         origin.EndsWith(".vercel.app") ||
+                         origin == "https://nearusab.me" ||
+                         origin == "https://www.nearusab.me";
               })
               .AllowAnyHeader()
               .AllowAnyMethod()
